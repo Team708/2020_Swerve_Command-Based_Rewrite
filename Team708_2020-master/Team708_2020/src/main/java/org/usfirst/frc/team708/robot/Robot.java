@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.usfirst.frc.team708.robot.commands.autonomous.*;
 import org.usfirst.frc.team708.robot.subsystems.*;
 import org.usfirst.frc.team708.robot.Constants;
-import org.usfirst.frc.team708.robot.Xbox;
+import org.usfirst.frc.team708.robot.OI;
 import org.usfirst.frc.team254.lib.util.math.RigidTransform2d;
 import org.usfirst.frc.team254.lib.util.math.Rotation2d;
 import org.usfirst.frc.team254.lib.util.math.Translation2d;
@@ -31,7 +31,7 @@ public class Robot extends TimedRobot {
 
     //
     // public static Drivetrain        drivetrain;
-    private Xbox driver, operator;
+    // private Xbox driver, operator;
     public static Swerve swerve;
     public static VisionProcessor visionprocessor;
     public static Shooter shooter;
@@ -39,6 +39,8 @@ public class Robot extends TimedRobot {
     public static Intake intake;
     public static Turret turret;
     public static Spinner spinner;
+
+    public OI oi;
 
     public double speed;
     public String gameData;
@@ -69,8 +71,8 @@ public class Robot extends TimedRobot {
         statsTimer.start(); // Starts the timer for the Smart Dashboard
  
         // Subsystem Initialization
-        driver   = new Xbox(0);
-        operator = new Xbox(1);
+        // driver   = new Xbox(0);
+        // operator = new Xbox(1);
 
         
         swerve = Swerve.getInstance();
@@ -83,9 +85,10 @@ public class Robot extends TimedRobot {
         shooter = new Shooter();
         visionprocessor = new VisionProcessor();
         
-        
-        driver.setDeadband(0.2);
-        operator.setDeadband(0.2);
+        oi = new OI(); //Must be at end
+
+        // driver.setDeadband(0.2);
+        // operator.setDeadband(0.2);
         visionprocessor.setNTInfo("ledMode", Constants.kVISION_LED_ON);
 
         colors = new Boolean[4];
@@ -99,6 +102,7 @@ public class Robot extends TimedRobot {
 
         sendDashboardSubsystems(); // Sends each subsystem's cmds to Smart Dashboard
         queueAutonomousModes();    // Adds autonomous modes to the selection box
+
     }
 
     /**
@@ -236,96 +240,10 @@ public class Robot extends TimedRobot {
                 }
         }
         
-        swerve.sendInput(driver.getX(Hand.kLeft), -driver.getY(Hand.kLeft), driver.getX(Hand.kRight), false, driver.leftTrigger.isBeingPressed());
+        //TODO fix command below
+        swerve.sendInput(oi.driver.getX(Hand.kLeft), -oi.driver.getY(Hand.kLeft), oi.driver.getX(Hand.kRight), false, oi.driver.leftTrigger.isBeingPressed());
         turret.updateAngle();
-        operator.update();
-
-        if(operator.leftCenterClick.wasPressed()) {
-            intake.shiftToHanger();
-            operator.rumble(1.0, 1.0);
-        }
-        else if(operator.rightCenterClick.wasPressed()) {
-            intake.lockHanger();
-            operator.rumble(1.0, 1.0);
-        }
-        else if (operator.leftBumper.wasPressed()) {
-            shooter.stopShooter();
-            shooter.feederOff();
-            hopper.stopMotor();
-            intake.StopMotorIntake();
-            operator.rumble(1.0, 1.0);
-        }
-        else if (operator.startButton.wasPressed()){
-            spinner.spinnerRotateThreeTimes();
-            operator.rumble(1.0, 1.0);
-        }
-        else if(operator.yButton.wasPressed()){
-            shooter.shootShort();
-            operator.rumble(1.0, 1.0);
-        }
-        else if (operator.bButton.wasPressed()){
-            spinner.spinnerRotateOneColor();
-            operator.rumble(1.0, 1.0);
-        }
-        else if(operator.POV0.wasPressed())
-            intake.toHanger();
-        else if(operator.POV90.wasPressed())
-            intake.toColorFromIntake();
-        else if(operator.POV180.wasPressed())
-            intake.toIntake();            
-        else if(operator.POV270.wasPressed())
-            intake.toColorFromHanger();
-        else if(operator.backButton.wasPressed())
-            shooter.feederUnload();
-        else if(operator.xButton.wasPressed())
-            hopper.moveMotorCounterClockwise();
-        else if(operator.aButton.wasPressed())
-            intake.toggleMotorIntake();
-        else if(operator.rightTrigger.wasPressed()){  //isBeingPressed
-            shooter.shootLong();
-            operator.rumble(1.0, 1.0);
-            // shooter.shootAuto();
-        }
-        else if(operator.rightBumper.wasPressed()){ //isBeingPressed
-            shooter.feederOn();
-            operator.rumble(1.0, 1.0);
-        }
-        else if (Math.abs(operator.getY(Hand.kLeft)) >= .3)
-            intake.moveHanger(operator.getY(Hand.kLeft));
-        else {
-            if (intake.stopHanger) intake.stopHanger();
-         }
-        
-        if (intake.inIntakePosition && !shooter.shooting) shooter.feederPreLoad();
-        driver.update();
-
-		if(driver.yButton.wasPressed())
-			swerve.rotate(0);
-		else if(driver.bButton.wasPressed())
-			swerve.rotate(90);
-        else if(driver.aButton.wasPressed())
-			swerve.rotate(180);
-        else if(driver.xButton.wasPressed())
-            swerve.rotate(270);
-        else if(driver.rightBumper.wasPressed())
-            swerve.rotate(72);
-        else if(driver.startButton.wasPressed()){
-            swerve.wheelBrake();
-            driver.rumble(1.0, 1.0);
-        }
-        else if(driver.backButton.wasPressed()){
-            driver.rumble(1.0, 1.0);
-            swerve.temporarilyDisableHeadingController();
-            swerve.zeroSensors(new RigidTransform2d(new Translation2d(Constants.ROBOT_HALF_LENGTH, Constants.kAutoStartingCorner.y() + Constants.ROBOT_HALF_WIDTH), Rotation2d.fromDegrees(0)));
-            turret.resetTurret();
-        }
-        else if(driver.leftBumper.wasPressed()) {
-            driver.rumble(1.0, 1.0);
-            if (Math.abs(Pigeon.getInstance().getAngle().getDegrees())>60) {
-                swerve.rotate(0);
-            }
-            visionprocessor.findTarget();
-        }
+        oi.operator.update();
     }
 
     /**
