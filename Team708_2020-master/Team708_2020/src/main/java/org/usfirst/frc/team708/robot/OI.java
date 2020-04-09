@@ -5,18 +5,28 @@ Integrate with commands when commands are wrote
 */
 
 import org.usfirst.frc.team708.robot.Xbox;
+import org.usfirst.frc.team708.robot.commands.buttonCommands.*;
 
-public class OI{
-        //joystick instantiation
-        public static final Xbox driver   = new Xbox(0);
-        public static final Xbox operator = new Xbox(1);
+public class OI {
+    // joystick instantiation
+    public static final Xbox driver = new Xbox(0);
+    public static final Xbox operator = new Xbox(1);
 
-        //button instantiation
-        public static final int SHIFT_TO_HANGER = operator.leftCenterClick;
+    // button instantiation
+    public static final int SHIFT_TO_HANGER = operator.leftCenterClick;
 
-    public OI(){
+    public OI() {
         driver.setDeadband(0.2);
         operator.setDeadband(0.2);
+
+        // Operator
+        operator.leftCenterClick.wasPressed(new IntakeShiftToHanger());
+		highGear.whenReleased(new GearLow());
+		// findBall.whenPressed(new FindBall());
+		findFeeder.whenPressed(new FindFeederCG());				
+		// rollerForward.whileHeld(new MoveRollerForward());	
+		// rollerBackward.whileHeld(new MoveRollerBackward());	
+		findTape.whenPressed(new FindRocket());
 
         //controls -> turn into commands**
         // if(operator.leftCenterClick.wasPressed()) {
