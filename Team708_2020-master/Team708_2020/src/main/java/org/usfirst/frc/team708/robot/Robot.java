@@ -241,9 +241,8 @@ public class Robot extends TimedRobot {
         }
         
         //TODO fix command below
-        swerve.sendInput(oi.driver.getX(Hand.kLeft), -oi.driver.getY(Hand.kLeft), oi.driver.getX(Hand.kRight), false, oi.driver.leftTrigger.isBeingPressed());
+        swerve.sendInput(oi.driver.getXAxis(Hand.kLeft), -oi.driver.getYAxis(Hand.kLeft), oi.driver.getXAxis(Hand.kRight), false, oi.driver.triggerIsBeingPressed(Hand.kLeft));
         turret.updateAngle();
-        oi.operator.update();
     }
 
     /**

@@ -1,6 +1,6 @@
 package org.usfirst.frc.team708.robot.util.triggers;
 
-import org.usfirst.frc.team708.robot.util.Gamepad;
+import org.usfirst.frc.team708.robot.Gamepad;
 
 import edu.wpi.first.wpilibj.buttons.Trigger;
 

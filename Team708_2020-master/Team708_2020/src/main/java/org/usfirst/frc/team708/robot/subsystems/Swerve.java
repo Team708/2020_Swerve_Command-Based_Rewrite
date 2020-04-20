@@ -8,7 +8,7 @@ import java.util.List;
 import org.usfirst.frc.team708.robot.Constants;
 import org.usfirst.frc.team708.robot.RobotMap;
 import org.usfirst.frc.team708.robot.commands.swerve.*;
-import org.usfirst.frc.team708.robot.pathfinder.PathfinderPath;
+// import org.usfirst.frc.team708.robot.pathfinder.PathfinderPath;
 import org.usfirst.frc.team708.robot.util.libs.SwerveHeadingController;
 import org.usfirst.frc.team708.robot.util.libs.SwerveKinematics;
 import org.usfirst.frc.team708.robot.util.libs.Util;
@@ -18,9 +18,9 @@ import org.usfirst.frc.team254.lib.util.math.Translation2d;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import jaci.pathfinder.Trajectory;
-import jaci.pathfinder.Trajectory.Segment;
-import jaci.pathfinder.followers.DistanceFollower;
+// import jaci.pathfinder.Trajectory;
+// import jaci.pathfinder.Trajectory.Segment;
+// import jaci.pathfinder.followers.DistanceFollower;
 
 public class Swerve extends Subsystem{
 	private static Swerve instance = null;
@@ -56,9 +56,9 @@ public class Swerve extends Subsystem{
 		return pose;
 	}
 	
-	DistanceFollower pathFollower;
-	PathfinderPath currentPath;
-	Trajectory currentPathTrajectory;
+	// DistanceFollower pathFollower;
+	// PathfinderPath currentPath;
+	// Trajectory currentPathTrajectory;
 	int currentPathSegment = 0;
 	double pathMotorOutput = 0;
 	boolean shouldUsePathfinder = false;
@@ -241,21 +241,21 @@ public class Swerve extends Subsystem{
 		return onTarget;
 	}
 	
-	public synchronized void followPath(PathfinderPath path, double goalHeading){
-		hasFinishedPath = false;
-		shouldUsePathfinder = false;
-		distanceTraveled = 0;
-		currentPathSegment = 0;
-		currentPath = path;
-		pathFollower = path.resetFollower();
-		currentPathTrajectory = path.getTrajectory();
-		headingController.setSnapTarget(goalHeading);
-		setState(ControlState.PATH_FOLLOWING);
+	// public synchronized void followPath(PathfinderPath path, double goalHeading){
+	// 	hasFinishedPath = false;
+	// 	shouldUsePathfinder = false;
+	// 	distanceTraveled = 0;
+	// 	currentPathSegment = 0;
+	// 	currentPath = path;
+	// 	pathFollower = path.resetFollower();
+	// 	currentPathTrajectory = path.getTrajectory();
+	// 	headingController.setSnapTarget(goalHeading);
+	// 	setState(ControlState.PATH_FOLLOWING);
 		
-		ultraSensesWall = false;
-		robotXPassed = false;
-		// enableCubeTracking(false);
-	}
+	// 	ultraSensesWall = false;
+	// 	robotXPassed = false;
+	// 	// enableCubeTracking(false);
+	// }
 	
 	public synchronized void updatePose(double timestamp){
 		double x = 0;
@@ -361,48 +361,48 @@ public class Swerve extends Subsystem{
 	    		}
 	    	}
 			break;
-		case PATH_FOLLOWING:
-			currentPathSegment = currentPath.getClosestSegmentIndex(pose, currentPathSegment);
-			int lookaheadPointIndex = currentPathSegment + currentPath.getLookaheadPoints();
-			if(lookaheadPointIndex >= currentPathTrajectory.length())
-				lookaheadPointIndex = currentPathTrajectory.length() - 1;
-			Segment lookaheadPoint = currentPathTrajectory.get(lookaheadPointIndex);
-			Translation2d lookaheadPosition = new Translation2d(lookaheadPoint.x, lookaheadPoint.y);
-			Rotation2d angleToLookahead = lookaheadPosition.translateBy(pose.getTranslation().inverse()).direction();
-			angleToLookahead = Rotation2d.fromRadians(pathFollower.getHeading());
-			if(currentPathSegment >= (currentPathTrajectory.length() - 1)){
-				double error = currentPath.getFinalPosition().translateBy(pose.getTranslation().inverse()).norm();
-					hasFinishedPath = true;
-					setState(ControlState.NEUTRAL);
-					return;
-			}else{
-				if(currentPathTrajectory.get(currentPathSegment).velocity >= currentPath.defaultSpeed())
-					shouldUsePathfinder = true;
-				if(shouldUsePathfinder)
-					pathMotorOutput = currentPathTrajectory.get(currentPathSegment).velocity / 12.5;
-				else
-					pathMotorOutput = currentPath.defaultSpeed() / 12.5;
-			}
-			double x = angleToLookahead.sin();
-		    double y = angleToLookahead.cos();
-		    double tmp = (y * pose.getRotation().cos()) + (x * pose.getRotation().sin());
-			xInput = (-y * pose.getRotation().sin()) + (x * pose.getRotation().cos());
-			yInput = tmp;
-			if(!currentPath.rotationOverride())
-				rotationCorrection = rotationCorrection*pathMotorOutput*currentPath.rotationScalar();
-		    kinematics.calculate(xInput * pathMotorOutput, yInput * pathMotorOutput, rotationCorrection);
-		    for(int i=0; i<modules.size(); i++){
-	    		if(Util.shouldReverse(kinematics.wheelAngles[i], modules.get(i).getModuleAngle().getDegrees())){
-	    			modules.get(i).setModuleAngle(kinematics.wheelAngles[i] + 180);
-	    			modules.get(i).setDriveOpenLoop(-kinematics.wheelSpeeds[i]);
-	    		}else{
-	    			modules.get(i).setModuleAngle(kinematics.wheelAngles[i]);
-	    			modules.get(i).setDriveOpenLoop(kinematics.wheelSpeeds[i]);
-	    		}
-	    	}
-			lastSteeringDirection = angleToLookahead;
-			currentPathSegment++;
-			break;
+		// case PATH_FOLLOWING:
+		// 	currentPathSegment = currentPath.getClosestSegmentIndex(pose, currentPathSegment);
+		// 	int lookaheadPointIndex = currentPathSegment + currentPath.getLookaheadPoints();
+		// 	if(lookaheadPointIndex >= currentPathTrajectory.length())
+		// 		lookaheadPointIndex = currentPathTrajectory.length() - 1;
+		// 	Segment lookaheadPoint = currentPathTrajectory.get(lookaheadPointIndex);
+		// 	Translation2d lookaheadPosition = new Translation2d(lookaheadPoint.x, lookaheadPoint.y);
+		// 	Rotation2d angleToLookahead = lookaheadPosition.translateBy(pose.getTranslation().inverse()).direction();
+		// 	angleToLookahead = Rotation2d.fromRadians(pathFollower.getHeading());
+		// 	if(currentPathSegment >= (currentPathTrajectory.length() - 1)){
+		// 		double error = currentPath.getFinalPosition().translateBy(pose.getTranslation().inverse()).norm();
+		// 			hasFinishedPath = true;
+		// 			setState(ControlState.NEUTRAL);
+		// 			return;
+		// 	}else{
+		// 		if(currentPathTrajectory.get(currentPathSegment).velocity >= currentPath.defaultSpeed())
+		// 			shouldUsePathfinder = true;
+		// 		if(shouldUsePathfinder)
+		// 			pathMotorOutput = currentPathTrajectory.get(currentPathSegment).velocity / 12.5;
+		// 		else
+		// 			pathMotorOutput = currentPath.defaultSpeed() / 12.5;
+		// 	}
+		// 	double x = angleToLookahead.sin();
+		//     double y = angleToLookahead.cos();
+		//     double tmp = (y * pose.getRotation().cos()) + (x * pose.getRotation().sin());
+		// 	xInput = (-y * pose.getRotation().sin()) + (x * pose.getRotation().cos());
+		// 	yInput = tmp;
+		// 	if(!currentPath.rotationOverride())
+		// 		rotationCorrection = rotationCorrection*pathMotorOutput*currentPath.rotationScalar();
+		//     kinematics.calculate(xInput * pathMotorOutput, yInput * pathMotorOutput, rotationCorrection);
+		//     for(int i=0; i<modules.size(); i++){
+	    // 		if(Util.shouldReverse(kinematics.wheelAngles[i], modules.get(i).getModuleAngle().getDegrees())){
+	    // 			modules.get(i).setModuleAngle(kinematics.wheelAngles[i] + 180);
+	    // 			modules.get(i).setDriveOpenLoop(-kinematics.wheelSpeeds[i]);
+	    // 		}else{
+	    // 			modules.get(i).setModuleAngle(kinematics.wheelAngles[i]);
+	    // 			modules.get(i).setDriveOpenLoop(kinematics.wheelSpeeds[i]);
+	    // 		}
+	    // 	}
+		// 	lastSteeringDirection = angleToLookahead;
+		// 	currentPathSegment++;
+		// 	break;
 		
 		case NEUTRAL:
 			stop();
