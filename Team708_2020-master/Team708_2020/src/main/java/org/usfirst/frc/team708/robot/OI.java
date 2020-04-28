@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.buttons.*;
 import org.usfirst.frc.team708.robot.Gamepad;
 import org.usfirst.frc.team708.robot.util.Gamepad_Old;
 import org.usfirst.frc.team708.robot.util.triggers.*;
+import org.usfirst.frc.team708.robot.commands.buttonCommands.*;
 
 public class OI{
 
@@ -113,6 +114,33 @@ public class OI{
 
         driver.setDeadband(0.2);
         operator.setDeadband(0.2);
+
+        //driver
+        rotateTo180.whenPressed(new RotateTo180());
+        rotateTo90.whenPressed(new RotateTo90());
+        rotateTo270.whenPressed(new RotateTo270());
+        rotateTo0.whenPressed(new RotateTo0());
+        brakeMode.whenPressed(new BrakeMode());
+        resetEverything.whenPressed(new ResetEverything());
+        manualVisionControl.whenPressed(new ManualVisionControl());
+        rotateTo72.whenPressed(new RotateTo72());
+
+        //operator
+        toggleMotorIntake.whenPressed(new ToggleIntakeMotor());
+        spinnerRotateOneColor.whenPressed(new SpinOneColor());
+        moveHopperCounterClockwise.whenPressed(new MoveHopperCounterClockwise());
+        shootShort.whenPressed(new ShootShort());
+        spinnerRotateThreeTimes.whenPressed(new SpinThreeTimes());
+        feederUnload.whenPressed(new UnloadFeeder());
+        everythingOff.whenPressed(new EverythingOff());
+        feederOn.whenPressed(new FeederOn());
+        shiftToHanger.whenPressed(new ToHanger());
+        lockHanger.whenPressed(new LockHanger());
+        toHanger.whenPressed(new ToHanger());
+        toColorFromIntake.whenPressed(new ToColorFromIntake());
+        toIntake.whenPressed(new ToIntake());
+        toColorFromHanger.whenPressed(new ToColorFromHanger());
+
 
         //controls -> turn into commands**
         // if(operator.leftCenterClick.wasPressed()) {
